@@ -1,0 +1,188 @@
+# 代码随想录算法训练营第十六天| **77. 组合**  ， **216.组合总和III** ， **17.电话号码的字母组合**
+
+##  **77. 组合**
+
+[第77题. 组合 | 代码随想录](https://programmercarl.com/0077.组合.html)
+
+## 我的思路
+
+纵是遍历集合，横是遍历从现在的数到n 自己举的例子是n＝4，k＝2，想简单了，举例不应该非常简单或特殊。 
+
+纵向其实是k
+
+## 问题总结
+
+没什么问题
+
+## 卡的思路
+
+![image-20260309143006825](assets/image-20260309143006825.png)
+
+回溯法的搜索过程就是一个树型结构的遍历过程，在如下图中，可以看出for循环用来横向遍历，递归的过程是纵向遍历。
+
+如此我们才遍历完图中的这棵树。
+
+for循环每次从startIndex开始遍历，然后用path保存取到的节点i。
+
+可以看出backtracking（递归函数）通过不断调用自己一直往深处遍历，总会遇到叶子节点，遇到了叶子节点就要返回。
+
+backtracking的下面部分就是回溯的操作了，撤销本次处理的结果。
+
+![image-20260309143046738](assets/image-20260309143046738.png)
+
+**所以，可以剪枝的地方就在递归中每一层的for循环所选择的起始位置**。
+
+**如果for循环选择的起始位置之后的元素个数 已经不足 我们需要的元素个数了，那么就没有必要搜索了**。
+
+## 我的代码
+
+```
+class Solution {
+public:
+    vector<vector<int>> result;
+    vector<int>path;
+    vector<vector<int>> combine(int n, int k) {
+        int startIndex=1;
+        backTracking(n,k,startIndex);
+        return result;
+        
+        
+    }
+    void backTracking(int n,int k,int startIndex){
+        if(path.size()==k){
+            result.push_back(path);
+            return;
+        }
+        for(int i=startIndex;i<n-(k-path.size())+2;i++){
+            path.push_back(i);
+            backTracking(n,k,i+1);
+            path.pop_back
+            ();
+        }
+        return;
+    }
+};
+```
+
+15min
+
+## 216.组合总和III
+
+[216. 组合总和 III - 力扣（LeetCode）](https://leetcode.cn/problems/combination-sum-iii/)
+
+## 我的思路
+
+ 2x树的深度是k，横向for是1-9，大于n就剪枝
+
+## 问题总结
+
+## 卡的思路
+
+已选元素总和如果已经大于n（图中数值为4）了，那么往后遍历就没有意义了，直接剪掉。
+
+![image-20260309150348440](assets/image-20260309150348440.png)
+
+## 我的代码
+
+```
+class Solution {
+public:
+    vector<vector<int>>result;
+    vector<int>path;
+    int sum=0;
+    vector<vector<int>> combinationSum3(int k, int n) {
+        backTracking(k,n,1);
+        return result;    
+    }
+    void backTracking(int k,int n,int startIndex){
+        if(sum==n&&path.size()==k){
+            result.push_back(path);
+            return;
+        }
+        for(int i=startIndex;i<10;i++){
+            sum+=i;
+            path.push_back(i);
+            backTracking(k,n,i+1);
+            sum-=i;
+            path.pop_back();
+        }
+        return;
+    }
+};
+```
+
+我没剪枝，时间紧，先不剪了吧。
+
+30min
+
+## 17.电话号码的字母组合
+
+[17.电话号码的字母组合 | 代码随想录](https://programmercarl.com/0017.电话号码的字母组合.html)
+
+## 我的思路
+
+多少个数字对应多少数组，数组的个数是深度，宽度是数组大小，没法剪枝
+
+## 问题总结
+
+映射遍历不能写死 `3`，应该 **根据映射字符串的长度来循环**。
+
+关键代码
+
+```
+string letters = tel[digits[startIndex]-'0'];
+for(int i = 0; i < letters.size(); i++){
+    path += letters[i];
+    backTracking(digits,startIndex+1);
+    path.pop_back();
+}
+```
+
+记得`-'0'`因为要转char
+
+## 卡的思路
+
+## 我的代码
+
+```
+class Solution {
+public:
+vector<string> tel={
+    "",
+    "",
+    "abc",
+    "def",
+    "ghi",
+    "jkl",
+    "mno",
+    "pqrs",
+    "tuv",
+    "wxyz"
+};
+vector<string> result;
+string path;
+    vector<string> letterCombinations(string digits) {
+        backTracking(digits,0);
+        return result;
+    }
+    void backTracking(string &digits,int startIndex){
+        if(path.size()==digits.size()){
+            result.push_back(path);
+            return;
+        }
+        string letters = tel[digits[startIndex]-'0'];
+        for(int i=0;i<letters.size();i++){
+            path += letters[i];
+            backTracking(digits,startIndex+1);
+            path.pop_back();
+        }
+        return;
+    }
+};
+```
+
+25min
+
+## 时长   
+
+1.5h
